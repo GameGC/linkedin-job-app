@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
   const params = new URLSearchParams({
     grant_type: 'authorization_code',
     code,
-    redirect_uri: 'https://your-vercel-app.vercel.app/api/linkedin-auth',
+    redirect_uri: process.env.REDIRECT_URI,
     client_id: process.env.LINKEDIN_CLIENT_ID,
     client_secret: process.env.LINKEDIN_CLIENT_SECRET,
   });
