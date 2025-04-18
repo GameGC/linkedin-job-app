@@ -1,4 +1,3 @@
-
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -17,11 +16,13 @@ const {
   PORT = 3001
 } = process.env;
 
+// Step 1: Redirect users to LinkedIn authorization page
 app.get('/auth/linkedin', (req, res) => {
   const authURL = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=r_ads+r_liteprofile`;
   res.redirect(authURL);
 });
 
+// Step 2: LinkedIn OAuth callback handler to exchange authorization code for access token
 app.get('/auth/linkedin/callback', async (req, res) => {
   const { code } = req.query;
 
@@ -38,17 +39,19 @@ app.get('/auth/linkedin/callback', async (req, res) => {
     });
 
     accessToken = response.data.access_token;
-    res.redirect('http://localhost:3000');
+    res.redirect('http://localhost:3000'); // Redirect to the frontend, update this URL as needed
   } catch (err) {
     res.status(500).send('OAuth failed');
   }
 });
 
+// Step 3: Provide the access token
 app.get('/api/token', (req, res) => {
   if (!accessToken) return res.status(403).json({ error: 'Unauthorized' });
   res.json({ accessToken });
 });
 
+// Step 4: Fetch LinkedIn job postings using access token
 app.get('/api/jobs', async (req, res) => {
   if (!accessToken) return res.status(403).json({ error: 'Unauthorized' });
 
@@ -78,13 +81,13 @@ app.get('/api/jobs', async (req, res) => {
       description: ad.description?.text || null,
       applyUrl: ad.landingPageUrl || null,
       hiringTeam: ad.jobDetails?.hiringTeam
-        ? {
+          ? {
             name: ad.jobDetails.hiringTeam.name,
             title: ad.jobDetails.hiringTeam.title,
             connection: ad.jobDetails.hiringTeam.connectionDegree,
             messageUrl: ad.jobDetails.hiringTeam.messageUrl,
           }
-        : null,
+          : null,
     }));
 
     res.json(jobs);
