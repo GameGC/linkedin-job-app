@@ -22,6 +22,7 @@ router.get('/', async (req: Request, res: Response) => {
         });
 
         const { access_token } = response.data;
+        console.log('Access Token:', access_token); // Log the access token
         res.redirect(`/?access_token=${access_token}`);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch access token' });
