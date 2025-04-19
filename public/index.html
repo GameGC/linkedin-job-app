@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Job Ads</title>
+</head>
+<body>
+<h1>LinkedIn Job Ads</h1>
+<button id="loginBtn">Login with LinkedIn</button>
+<div id="jobsContainer" style="display: none;">
+    <h2>Job Ads</h2>
+    <ul id="jobsList"></ul>
+</div>
+
+<script>
+    document.getElementById('loginBtn').addEventListener('click', () => {
+        window.location.href = '/api/linkedin/auth';
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get('access_token');
+
+    if (accessToken) {
+        document.getElementById('loginBtn').style.display = 'none';
+        document.getElementById('jobsContainer').style.display = 'block';
+
+        fetch(`/api/linkedin/jobs?access_token=${accessToken}`)
+            .then(response => response.json())
+            .then(data => {
+                const jobsList = document.getElementById('jobsList');
+                data.forEach(job => {
+                    const li = document.createElement('li');
+                    li.textContent = job.title;
+                    jobsList.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Failed to fetch jobs:', error));
+    }
+</script>
+</body>
+</html>
