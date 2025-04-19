@@ -4,12 +4,14 @@
       "src": "src/app.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["dist/**/*"]
+        "includeFiles": ["public/**/*", "dist/**/*"]
       }
     }
   ],
-  "rewrites": [
-    { "source": "/", "destination": "/public/index.html" },
-    { "source": "/(.*)", "destination": "/src/app.ts" }
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/app.ts"
+    }
   ]
 }
