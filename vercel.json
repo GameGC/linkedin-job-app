@@ -1,8 +1,17 @@
 {
-  "rewrites": [
+  "builds": [
     {
-      "source": "/auth/callback",
-      "destination": "/api/linkedin-auth"
+      "src": "src/app.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["dist/**/*"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/app.ts"
     }
   ]
 }
